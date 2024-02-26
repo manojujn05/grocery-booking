@@ -29,12 +29,16 @@ async function Login(req: Request, res: Response) {
 
   try {
     const sql = `SELECT * FROM user WHERE email = ?`;
-    const [rows]: [any[]] = await pool.execute(sql, [email]); // Explicitly annotate the type of rows
+    const result: any[][] | any[] = await pool.execute(sql, [email]);
+    const rows: any[][] = Array.isArray(result[0]) ? result[0] : [result[0]];
+
+    //const [rows]: [any[][]] = await pool.execute(sql, [email]);
+
     if (rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    const passwordMatch = await bcrypt.compare(password, rows[0].password);
+    const passwordMatch = await bcrypt.compare(password, rows[0][0].password);
     if (passwordMatch) {
       res.status(200).json({ message: "Login successful." });
     } else {
