@@ -7,6 +7,12 @@ async function getAllItems(): Promise<any> {
   return rows;
 }
 
+async function getAvailableItems(): Promise<any> {
+  const sqlQuery: string = "SELECT * FROM grocery_items where quantity > 0;";
+  const [rows, fields] = await pool.execute(sqlQuery);
+  return rows;
+}
+
 async function getItem(req: Request, res: Response): Promise<any> {
   let { Id } = req.body;
   const selSql: string = `SELECT * FROM grocery_items where Id = ${Id};`;
@@ -15,8 +21,8 @@ async function getItem(req: Request, res: Response): Promise<any> {
 }
 
 async function delItem(req: Request, res: Response): Promise<any> {
-  let { Id } = req.body;
-  const delSql: string = `DELETE FROM grocery_items WHERE Id = ${Id};`;
+  const itemId = req.params.id;
+  const delSql: string = `DELETE FROM grocery_items WHERE Id = ${itemId};`;
   const [rows, fields] = await pool.execute(delSql);
   return rows;
 }
@@ -48,9 +54,9 @@ async function updateItem(req: Request, res: Response): Promise<any> {
   
   try {
     const [rows, fields] = await pool.execute(updSql, queryParams);
-    return res.status(200).json({ message: "Item updated successfully." });
+    return rows;
   } catch (error : any) {
-    return res.status(500).json({ error: "Internal server error", details: error.message });
+    return error.message;
   }
 }
 
@@ -66,5 +72,6 @@ export {
   getItem,
   insertItem, 
   updateItem,
-  delItem
+  delItem,
+  getAvailableItems
 };

@@ -2,6 +2,14 @@ import { Request, Response } from "express";
 import { isEmail } from "validator";
 import bcrypt from "bcrypt";
 import pool from '../database/connection';
+import jwt from 'jsonwebtoken';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  mobile: string;
+}
 
 async function Register(req: Request, res: Response) {
   try {
@@ -14,13 +22,12 @@ async function Register(req: Request, res: Response) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const callProcedureSQL = `INSERT INTO user (email, name, password) VALUES (?, ?, ?)`;
-    await pool.execute(callProcedureSQL, [email, name, hashedPassword]);
+    console.log(callProcedureSQL);
+    const [rows, fields] = await pool.execute(callProcedureSQL, [email, name, hashedPassword]);
 
-    res.status(201).json({
-      message: "Registration successful.",
-    });
+    return rows;
   } catch (error: any) {
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    return  error.message;
   }
 }
 
@@ -30,24 +37,24 @@ async function Login(req: Request, res: Response) {
   try {
     const sql = `SELECT * FROM user WHERE email = ?`;
     const result: any[][] | any[] = await pool.execute(sql, [email]);
-    const rows: any[][] = Array.isArray(result[0]) ? result[0] : [result[0]];
-
-    //const [rows]: [any[][]] = await pool.execute(sql, [email]);
+    const rows: any[] = Array.isArray(result[0]) ? result[0] : [result[0]];
 
     if (rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
-
-    const passwordMatch = await bcrypt.compare(password, rows[0][0].password);
+    const user = rows[0];
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if (passwordMatch) {
-      res.status(200).json({ message: "Login successful." });
+      const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET || '', {
+        expiresIn: '1h' 
+      });
+       return token ;
     } else {
-      res.status(401).json({ error: "Invalid credentials." });
+      return "Invalid credentials.";
     }
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ error: "Internal server error." });
+    return  "Internal server error.";
   }
 }
 
-export { Register, Login };
+export { User, Register, Login };

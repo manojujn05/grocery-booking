@@ -1,9 +1,13 @@
-import { GetAllItems,  GetItem } from './items.controller';
+import { GetAllItems,  GetItem, InsertItem, DelItem, UpdateItem, GetAvailableItems } from './items.controller';
 import express from 'express';
+import authToken from '../../middleware/auth'
 const itemRouter = express.Router();
 
-itemRouter.get('/', GetAllItems);
-itemRouter.post('/', GetItem);
+itemRouter.get('/allItems', GetAllItems);
+itemRouter.get('/avlItems', GetAvailableItems);
+itemRouter.post('/insert', authToken, InsertItem);
+itemRouter.get('/delete/:id', authToken, DelItem);
+itemRouter.post('/update', authToken, UpdateItem);
 
 export {
   itemRouter
