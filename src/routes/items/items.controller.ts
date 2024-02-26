@@ -3,8 +3,8 @@ import { getAllItems, getItem, delItem, insertItem, updateItem, getAvailableItem
 
 async function GetAllItems(req: Request, res: Response): Promise<Response> {
   try {
-    const launches = await getAllItems();
-    return res.status(200).json(launches);
+    const items = await getAllItems();
+    return res.status(200).json(items);
   } catch (error) {
     const errorMessage = (error as Error).message;
     return res.status(500).json({ error: "Internal server error", details: errorMessage });

@@ -11,7 +11,7 @@ app.use(express.json());
 // Middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-const PORT: number = parseInt(process.env.PORT || '4000', 10);
+const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
 app.use('/api', apiRouter);
 
