@@ -3,6 +3,7 @@ import { isEmail } from "validator";
 import bcrypt from "bcrypt";
 import pool from '../database/connection';
 import jwt from 'jsonwebtoken';
+require('dotenv').config();
 
 interface User {
   id: number;
@@ -21,9 +22,8 @@ async function Register(req: Request, res: Response) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const callProcedureSQL = `INSERT INTO user (email, name, password) VALUES (?, ?, ?)`;
-    console.log(callProcedureSQL);
-    const [rows, fields] = await pool.execute(callProcedureSQL, [email, name, hashedPassword]);
+    const insSQL = `INSERT INTO user (email, name, password) VALUES (?, ?, ?)`;
+    const [rows, fields] = await pool.execute(insSQL, [email, name, hashedPassword]);
 
     return rows;
   } catch (error: any) {

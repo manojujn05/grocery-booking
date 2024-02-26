@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2024 at 10:01 AM
+-- Generation Time: Feb 26, 2024 at 01:49 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -42,7 +42,39 @@ INSERT INTO `grocery_items` (`Id`, `name`, `price`, `quantity`) VALUES
 (1, 'Lorem Ipsum', 100.00, 5.00),
 (2, 'Pulses', 100.00, 50.00),
 (3, 'Rice', 100.00, 50.00),
-(4, 'Biscuit', 10.00, 50.00);
+(4, 'Biscuit', 10.00, 50.00),
+(6, 'Sugar', 40.00, 500.00);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `Id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `order_date` date NOT NULL,
+  `total_amount` float(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`Id`, `user_id`, `order_date`, `total_amount`) VALUES
+(4, 1, '0000-00-00', 100.00),
+(6, 1, '2024-02-26', NULL),
+(7, 1, '2024-02-26', NULL),
+(8, 1, '2024-02-26', NULL),
+(9, 1, '2024-02-26', NULL),
+(10, 1, '2024-02-26', NULL),
+(11, 1, '2024-02-26', NULL),
+(12, 1, '2024-02-26', NULL),
+(13, 1, '2024-02-26', NULL),
+(19, 2, '2024-02-26', 1000.00),
+(20, 2, '2024-02-26', 1000.00),
+(21, 2, '2024-02-26', 1200.00);
 
 -- --------------------------------------------------------
 
@@ -52,7 +84,7 @@ INSERT INTO `grocery_items` (`Id`, `name`, `price`, `quantity`) VALUES
 
 CREATE TABLE `order_items` (
   `Id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
   `item_id` int(10) NOT NULL,
   `quantity` int(10) NOT NULL,
   `date` date NOT NULL
@@ -62,15 +94,29 @@ CREATE TABLE `order_items` (
 -- Dumping data for table `order_items`
 --
 
-INSERT INTO `order_items` (`Id`, `user_id`, `item_id`, `quantity`, `date`) VALUES
-(1, 1, 1, 1, '2024-02-26'),
-(2, 1, 2, 1, '2024-02-26'),
-(3, 1, 1, 1, '2024-02-26'),
-(4, 1, 2, 1, '2024-02-26'),
-(5, 1, 1, 1, '2024-02-26'),
-(6, 1, 2, 1, '2024-02-26'),
-(7, 1, 1, 1, '2024-02-26'),
-(8, 1, 2, 1, '2024-02-26');
+INSERT INTO `order_items` (`Id`, `order_id`, `item_id`, `quantity`, `date`) VALUES
+(11, 6, 1, 5, '2024-02-26'),
+(12, 6, 2, 5, '2024-02-26'),
+(13, 7, 1, 5, '2024-02-26'),
+(14, 7, 2, 5, '2024-02-26'),
+(15, 8, 1, 5, '2024-02-26'),
+(16, 8, 2, 5, '2024-02-26'),
+(17, 9, 1, 5, '2024-02-26'),
+(18, 9, 2, 5, '2024-02-26'),
+(19, 10, 1, 5, '2024-02-26'),
+(20, 10, 2, 5, '2024-02-26'),
+(21, 11, 1, 5, '2024-02-26'),
+(22, 11, 2, 5, '2024-02-26'),
+(23, 12, 1, 5, '2024-02-26'),
+(24, 12, 2, 5, '2024-02-26'),
+(25, 13, 1, 5, '2024-02-26'),
+(26, 13, 2, 5, '2024-02-26'),
+(37, 19, 1, 5, '2024-02-26'),
+(38, 19, 2, 5, '2024-02-26'),
+(39, 20, 1, 5, '2024-02-26'),
+(40, 20, 2, 5, '2024-02-26'),
+(41, 21, 1, 5, '2024-02-26'),
+(42, 21, 2, 7, '2024-02-26');
 
 -- --------------------------------------------------------
 
@@ -91,8 +137,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`Id`, `name`, `email`, `mobile`, `password`) VALUES
-(1, 'manoj', 'manoj@gmail.com', '', '$2b$10$ExYm8/9axtTOpsr/5MBYru3OIZmVraLF0bpjzM9u0jkLVeWbeWTra'),
-(2, 'test', 'test@gmail.com', '', '$2b$10$c2y6EZMEjKB1nVn5mN/hNejMGj89CDBoFhKMzTDWHO6y2xo2JS3nG');
+(1, 'manoj', 'manoj@gmail.com', '', '$2b$10$ExYm8/9axtTOpsr/5MBYru3OIZmVraLF0bpjzM9u0jkLVeWbeWTra');
 
 --
 -- Indexes for dumped tables
@@ -102,6 +147,12 @@ INSERT INTO `user` (`Id`, `name`, `email`, `mobile`, `password`) VALUES
 -- Indexes for table `grocery_items`
 --
 ALTER TABLE `grocery_items`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
   ADD PRIMARY KEY (`Id`);
 
 --
@@ -124,13 +175,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `grocery_items`
 --
 ALTER TABLE `grocery_items`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `user`
